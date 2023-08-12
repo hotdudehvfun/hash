@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hash it</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/core.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/md5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.min.js"></script>
+</head>
+<body>
+    <div 
+     class='text-3xl font-bold text-center bg-blue-500 shadow py-2 text-white'>
+      MD5 Hash Generator
+</div>
+
+
+
+<div id='app' class='flex flex-col gap-2  p-8 max-w-6xl'>
+  <div
+       class="flex flex-col gap-4 shadow-lg p-4 rounded">
+    
+  <input 
+         v-on:keyup='handle_keypress_input' 
+         v-model='plain_text' 
+         type="password" 
+         placeholder="Plain text here" 
+         :class='[input]'/>
+  
+  <input 
+         v-model='md5' 
+         type="text" 
+         placeholder="MD5 hash here" 
+         :class='[input]'/>
+  
+    <div
+         class="flex flex-row justify-center gap-4">
+      <button 
+              v-on:click="hashit" 
+              :class="[btn]">
+              Hash it
+      </button>
+      <button 
+              v-on:click="copyit" 
+              :class="[btn]">
+              Copy Hash
+      </button>
+    </div>
+    <span class='text-sm text-gray-300 text-center'>{{msg}}</span>
+  </div>
+    
+  
+  
+  
+  <div 
+       class='flex flex-col shadow-lg p-4 rounded-lg'>
+    <span class='text-center font-bold text-xl'>Options</span>
+    <div class='grid grid-cols-2 gap-2 p-2 '>
+      <span>Auto Hash as you type</span> <input v-model='auto_hash' type='checkbox'/>
+      <span>Auto Copy as you type</span> <input v-model='auto_copy' type='checkbox' />
+      
+    </div>
+  </div>
+</div>
+
+
+<script>
+
+let app = new Vue({
+  el : '#app',
+  data:
+  {
+    plain_text:"",
+    md5:"",
+    auto_hash:true,
+    auto_copy:true,
+    msg:"",
+    btn:"font-bold rounded-full w-max border-blue-300 border px-4 py-2 bg-blue-50 text-blue-500 focus:bg-blue-100 hover:shadow",
+    input:"px-3 py-2 bg-white border-b border-blue-400 placeholder-gray-300 focus:outline-none focus:border-blue-500 w-full  sm:text-sm focus:ring-none ",
+  },
+  methods:
+  {
+    handle_keypress_input:function()
+    {
+      if(this.auto_hash)
+        this.hashit()
+      if(this.auto_copy)
+        this.copyit()
+      
+     
+    },
+    hashit:function()
+    {
+      if(this.plain_text.length>0)
+      {
+        this.md5 = CryptoJS.MD5(this.plain_text).toString()
+        this.msg="op"
+      }
+    },
+    copyit:function()
+    {
+      let that = this
+      if(this.md5.length>0)
+      {
+        navigator.clipboard.writeText(this.md5).then(function()
+        {
+          that.msg="Hash Copied to Clipboard"
+        }, function() {
+          that.msg="Failed to access clipboard" 
+        });
+      }
+    },
+    
+  }
+})
+</script>
+
+
+</body>
+</html>
